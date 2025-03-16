@@ -5,7 +5,7 @@ export default function Header() {
     <header className="border-b">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link href="/" className="text-2xl font-bold text-primary">
-          PropertyFinder
+          Broker AI
         </Link>
         <nav className="flex gap-6">
           <Link href="/buy" className="hover:text-primary">Buy</Link>

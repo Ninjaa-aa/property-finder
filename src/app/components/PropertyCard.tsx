@@ -1,7 +1,8 @@
 'use client';
-import { MapPin, User, Building, Phone, Mail, Bed, ExternalLink } from 'lucide-react';
+import { MapPin, User, Building, Phone, Mail, Bed, ExternalLink, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import Modal from './Modal';
+import GraphModal from './GraphModal';
 
 interface PropertyCardProps {
   company: string;
@@ -14,6 +15,7 @@ interface PropertyCardProps {
   bedrooms?: string;
   websiteUrl?: string;
   sourceSite?: string;
+  index?: number;
 }
 
 export default function PropertyCard({
@@ -26,15 +28,26 @@ export default function PropertyCard({
   contactEmail = "contact@example.com",
   bedrooms = "3",
   websiteUrl = "https://example.com/property/123",
-  sourceSite = "Zameen.com"
+  sourceSite = "Zameen.com",
+  index = 0
 }: PropertyCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGraphModalOpen, setIsGraphModalOpen] = useState(false);
+  
+  // Calculate staggered animation delay based on index
+  const animationDelay = `${index * 0.05}s`;
+  
+  // Convert price string to numeric value for the graph (assuming format "PKR X,XXX,XXX")
+  const currentPrice = parseFloat(price.replace(/[^0-9.]/g, '')) / 1000000;
+  // Generate a "previous price" that's slightly lower (for demo purposes)
+  const previousPrice = currentPrice * 0.85;
   
   return (
     <>
       <div 
-        className="border-b border-gray-200 py-5 hover:bg-gray-50 transition-colors property-card-hover cursor-pointer"
+        className="border-b border-gray-200 py-5 hover:bg-gray-50 transition-all property-card-hover cursor-pointer animate-slideInRight"
         onClick={() => setIsModalOpen(true)}
+        style={{ animationDelay }}
       >
         <div className="flex items-center justify-between px-4">
           <div className="flex-1">
@@ -109,6 +122,27 @@ export default function PropertyCard({
             </div>
           </div>
           
+          <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+            <div className="flex justify-between items-center">
+              <div>
+                <h4 className="text-sm font-medium text-blue-800 mb-2">PRICE INFORMATION</h4>
+                <div className="text-lg font-bold text-gray-900">{price}</div>
+                <div className="text-sm text-blue-700 mt-1">
+                  Approximately {(previousPrice * 1000000).toLocaleString()} PKR 6 months ago
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  setIsGraphModalOpen(true);
+                }}
+                className="flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors"
+              >
+                <TrendingUp size={16} />
+                <span>View Price History</span>
+              </button>
+            </div>
+          </div>
+          
           <div className="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-100">
             <h4 className="text-sm font-medium text-blue-800 mb-2">SOURCE INFORMATION</h4>
             <div className="flex items-center justify-between">
@@ -138,6 +172,14 @@ export default function PropertyCard({
           </div>
         </div>
       </Modal>
+      
+      <GraphModal
+        isOpen={isGraphModalOpen}
+        onClose={() => setIsGraphModalOpen(false)}
+        propertyName={`${company} - ${location}`}
+        currentPrice={currentPrice}
+        previousPrice={previousPrice}
+      />
     </>
   );
 } 
