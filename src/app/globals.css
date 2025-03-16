@@ -1,22 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  --primary-light: #60a5fa;
   --secondary: #64748b;
   --background: #f8fafc;
+  --background-dark: #0f172a;
   --text: #0f172a;
   --success: #10b981;
   --warning: #f59e0b;
   --danger: #ef4444;
+  --accent: #8b5cf6;
+  --accent-dark: #7c3aed;
 }
 
-/* Modern glass effect */
+/* Futuristic gradient backgrounds */
+.bg-gradient-futuristic {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+}
+
+.bg-gradient-light {
+  background: linear-gradient(to bottom, #f8fafc 0%, #f1f5f9 100%);
+}
+
+/* Frosted glass effect */
 .glass {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(15, 23, 42, 0.1);
 }
 
 .glass-dark {
@@ -24,6 +42,30 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Neumorphic elements */
+.neumorphic-card {
+  background: #f0f4fa;
+  box-shadow: 10px 10px 20px #d1d9e6, -10px -10px 20px #ffffff;
+  border-radius: 15px;
+}
+
+.neumorphic-button {
+  background: linear-gradient(145deg, #f0f4fa, #e6eaf0);
+  box-shadow: 5px 5px 10px #d1d9e6, -5px -5px 10px #ffffff;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.neumorphic-button:hover {
+  box-shadow: 3px 3px 6px #d1d9e6, -3px -3px 6px #ffffff;
+  transform: translateY(-2px);
+}
+
+.neumorphic-button:active {
+  box-shadow: inset 5px 5px 10px #d1d9e6, inset -5px -5px 10px #ffffff;
 }
 
 /* Custom scrollbar */
@@ -50,55 +92,165 @@
 * {
   transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
+  transition-duration: 200ms;
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
   min-height: 100vh;
+  background-color: var(--background);
+  color: var(--text);
 }
 
-/* Card hover effects */
+/* Enhanced animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animate-slideUp {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-pulse {
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,0.2) 50%, 
+    rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced card hover effects */
 .property-card-hover {
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  position: relative;
+}
+
+.property-card-hover::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  z-index: -1;
 }
 
 .property-card-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border-left: 3px solid var(--primary);
+  transform: translateY(-5px);
+  border-left: 4px solid var(--primary);
+}
+
+.property-card-hover:hover::after {
+  opacity: 1;
 }
 
 /* Modern buttons */
 .btn-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors shadow-md hover:shadow-lg;
+  @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-2.5 rounded-lg transition-all shadow-md hover:shadow-lg font-medium transform hover:-translate-y-0.5;
 }
 
 .btn-secondary {
-  @apply bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-lg transition-colors shadow-sm hover:shadow-md;
+  @apply bg-white hover:bg-gray-100 text-gray-800 px-6 py-2.5 rounded-lg transition-all shadow-sm hover:shadow-md border border-gray-200 font-medium transform hover:-translate-y-0.5;
 }
 
-/* Animated gradients for backgrounds */
-.animated-gradient {
-  background: linear-gradient(-45deg, #2563eb, #3b82f6, #60a5fa, #93c5fd);
-  background-size: 400% 400%;
-  animation: gradient 15s ease infinite;
+.btn-icon {
+  @apply rounded-full p-2 transition-all hover:shadow-md hover:scale-110;
 }
 
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+/* Futuristic badge/chip design */
+.badge-futuristic {
+  @apply px-3 py-1 rounded-full text-xs font-medium flex items-center justify-center;
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  transition: all 0.3s ease;
 }
 
-.filter-chip {
-  @apply px-3 py-1.5 border border-gray-700 rounded-full text-sm;
+.badge-futuristic:hover {
+  background: rgba(59, 130, 246, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Loading and activity indicators */
+.dot-flashing {
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--primary);
+  animation: dot-flashing 1s infinite alternate;
+  animation-delay: 0.5s;
+}
+
+.dot-flashing::before, .dot-flashing::after {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--primary);
+  animation: dot-flashing 1s infinite alternate;
+}
+
+.dot-flashing::before {
+  left: -15px;
+  animation-delay: 0s;
+}
+
+.dot-flashing::after {
+  left: 15px;
+  animation-delay: 1s;
+}
+
+@keyframes dot-flashing {
+  0% { background-color: var(--primary); }
+  50%, 100% { background-color: rgba(59, 130, 246, 0.2); }
 }
 
 /* Dark theme colors */

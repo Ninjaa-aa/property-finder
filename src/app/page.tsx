@@ -3,7 +3,8 @@ import SearchBar from './components/SearchBar';
 import PropertyCard from './components/PropertyCard';
 import { useState } from 'react';
 import Modal from './components/Modal';
-import { BellRing, MapPin } from 'lucide-react';
+import { BellRing, MapPin, ArrowRight, TrendingUp, ArrowUpRight } from 'lucide-react';
+import PriceGraph from './components/PriceGraph';
 
 const SAMPLE_PROPERTIES = [
   {
@@ -58,27 +59,62 @@ const SAMPLE_PROPERTIES = [
     websiteUrl: 'https://zameen.com/property/234567',
     sourceSite: 'Zameen.com'
   },
+  {
+    id: 5,
+    company: 'Skyline Properties',
+    contactPerson: 'Farah Ahmed',
+    location: 'Islamabad, E-11',
+    size: '8 marla',
+    price: 'PKR 15,200,000',
+    contactPhone: '+92 311 7773456',
+    contactEmail: 'farah@skylineproperties.pk',
+    bedrooms: '3',
+    websiteUrl: 'https://zameen.com/property/234567',
+    sourceSite: 'Zameen.com'
+  },
+  
 ];
+
+// Extract prices for the aggregate graph
+const extractPrices = () => {
+  const prices = SAMPLE_PROPERTIES.map(prop => {
+    const numericPrice = parseFloat(prop.price.replace(/[^0-9.]/g, '')) / 1000000;
+    return numericPrice;
+  });
+  
+  // Sort from lowest to highest for better visualization
+  return prices.sort((a, b) => a - b);
+};
 
 export default function Home() {
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
   
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      <header className="bg-gray-900 text-white">
-        <div className="container mx-auto px-6 py-3 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">Broker AI</h1>
-          <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-gradient-light">
+      <header className="bg-gradient-futuristic text-white py-4 border-b border-gray-800">
+        <div className="container mx-auto px-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
+              PropertyFinder
+            </h1>
+            <div className="hidden md:flex ml-8 gap-1">
+              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+              <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" style={{ animationDelay: '0.2s' }}></span>
+              <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" style={{ animationDelay: '0.4s' }}></span>
+            </div>
+          </div>
+          <div className="flex items-center gap-5">
             <button 
               onClick={() => setIsSessionModalOpen(true)}
-              className="relative flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+              className="relative flex items-center text-blue-300 hover:text-blue-200 transition-colors btn-icon group"
             >
-              <BellRing size={20} className="mr-1" />
-              <span className="text-sm">Updates</span>
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">3</span>
+              <BellRing size={20} className="group-hover:animate-pulse" />
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
             </button>
-            <a href="#" className="hover:text-blue-400 transition-colors">Login</a>
-            <a href="#" className="bg-blue-600 text-white px-4 py-1.5 rounded-lg hover:bg-blue-700 transition-colors">Sign up</a>
+            <a href="#" className="text-blue-300 hover:text-blue-200 font-medium transition-colors hover:underline">Login</a>
+            <a href="#" className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-4 py-1.5 rounded-lg transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+              Sign up
+            </a>
           </div>
         </div>
       </header>
@@ -94,39 +130,109 @@ export default function Home() {
           </span>
         </div>
         
-        {/* Tab for Best Properties */}
-        <div className="flex bg-white rounded-t-lg shadow-sm border-b border-gray-200">
-          <div className="w-full text-center py-3 border-b-2 border-blue-600 font-medium text-blue-600">
-            Best Properties
+        <div className="flex gap-6">
+          {/* 70% Property listings column */}
+          <div className="w-[70%]">
+            {/* Tab for Best Properties */}
+            <div className="flex bg-white rounded-t-lg shadow-sm border-b border-gray-200">
+              <div className="w-full text-center py-3 border-b-2 border-blue-600 font-medium text-blue-600">
+                Best Properties
+              </div>
+            </div>
+            
+            {/* Column headers */}
+            <div className="grid grid-cols-4 py-4 px-4 bg-white border-b border-gray-200 text-sm font-medium text-gray-500">
+              <div>Company & Contact</div>
+              <div>Location</div>
+              <div>Size</div>
+              <div className="text-right">Price</div>
+            </div>
+            
+            {/* Property listings */}
+            <div className="bg-white rounded-b-lg shadow-sm">
+              {SAMPLE_PROPERTIES.map((property, index) => (
+                <PropertyCard 
+                  key={property.id}
+                  company={property.company}
+                  contactPerson={property.contactPerson}
+                  location={property.location}
+                  size={property.size}
+                  price={property.price}
+                  contactPhone={property.contactPhone}
+                  contactEmail={property.contactEmail}
+                  bedrooms={property.bedrooms}
+                  websiteUrl={property.websiteUrl}
+                  sourceSite={property.sourceSite}
+                  index={index}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-        
-        {/* Column headers */}
-        <div className="grid grid-cols-4 py-4 px-4 bg-white border-b border-gray-200 text-sm font-medium text-gray-500">
-          <div>Company & Contact</div>
-          <div>Location</div>
-          <div>Size</div>
-          <div className="text-right">Price</div>
-        </div>
-        
-        {/* Property listings */}
-        <div className="bg-white rounded-b-lg shadow-sm">
-          {SAMPLE_PROPERTIES.map((property, index) => (
-            <PropertyCard 
-              key={property.id}
-              company={property.company}
-              contactPerson={property.contactPerson}
-              location={property.location}
-              size={property.size}
-              price={property.price}
-              contactPhone={property.contactPhone}
-              contactEmail={property.contactEmail}
-              bedrooms={property.bedrooms}
-              websiteUrl={property.websiteUrl}
-              sourceSite={property.sourceSite}
-              index={index}
-            />
-          ))}
+          
+          {/* 30% Analysis column */}
+          <div className="w-[30%] glass-dark text-gray-800 rounded-lg animate-fadeIn">
+            <div className="sticky top-4">
+              <div className="bg-white p-5 rounded-lg shadow-lg border border-gray-100">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-lg flex items-center">
+                    <TrendingUp size={18} className="text-blue-600 mr-2" />
+                    Price Analysis
+                  </h3>
+                  <span className="text-xs text-gray-500 px-2 py-1 bg-gray-100 rounded-full">Islamabad Area</span>
+                </div>
+                
+                <div className="mb-6">
+                  <PriceGraph 
+                    compactSize={true}
+                    propertyName="Aggregate Price Distribution"
+                    propertyPrice={Math.max(...extractPrices())}
+                    previousPrice={Math.min(...extractPrices())}
+                  />
+                </div>
+                
+                <div className="border-t border-gray-100 pt-4">
+                  <h4 className="text-sm font-medium text-gray-500 mb-3">PRICE STATS</h4>
+                  
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Lowest</span>
+                      <span className="font-medium">PKR {Math.min(...extractPrices()).toFixed(1)}M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Average</span>
+                      <span className="font-medium">PKR {(extractPrices().reduce((acc, curr) => acc + curr, 0) / extractPrices().length).toFixed(1)}M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Highest</span>
+                      <span className="font-medium">PKR {Math.max(...extractPrices()).toFixed(1)}M</span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 border-t border-gray-100 pt-4">
+                    <div className="flex justify-between items-center mb-3">
+                      <h4 className="text-sm font-medium text-gray-500">MARKET INSIGHT</h4>
+                      <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Updated today</span>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4">
+                      Properties in this area have appreciated by 8.5% in the last 6 months, showing strong market growth.
+                    </p>
+                    
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs bg-green-50 text-green-600 font-medium px-2 py-1 rounded-full flex items-center">
+                        <ArrowUpRight size={12} className="mr-1" />
+                        8.5% growth
+                      </span>
+                      <button className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center">
+                        Full Report
+                        <ArrowRight size={12} className="ml-1" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       
